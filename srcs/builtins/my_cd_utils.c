@@ -1,40 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr_realloc.c                                :+:      :+:    :+:   */
+/*   my_cd_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qtamaril <qtamaril@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/03 17:30:49 by qtamaril          #+#    #+#             */
-/*   Updated: 2020/10/10 11:34:33 by qtamaril         ###   ########.fr       */
+/*   Created: 2020/10/15 09:40:34 by qtamaril          #+#    #+#             */
+/*   Updated: 2020/10/17 15:47:10 by qtamaril         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	**ft_strstr_realloc(char **src, size_t size)
+int	check_dir(char *file)
 {
-	char	**temp;
-	size_t	i;
+	int			stat_res;
+	struct stat	file_stat;
 
-	temp = src;
-	i = 0;
-	if (src)
+	if (!ft_strcmp(file, ""))
+		return (0);
+	if ((stat_res = stat(file, &file_stat) == -1))
 	{
-		size += ft_strstrlen(src);
-		src = (char**)malloc(sizeof(char*) * (size + 1));
-		while (i < size)
-		{
-			src[i] = temp[i];
-			i++;
-		}
-		src[i] = NULL;
-		free(temp);
+		error_no_file_or_dir(file);
+		g_status = 1;
+		return (0);
 	}
-	else
+	else if (!S_ISDIR(file_stat.st_mode))
 	{
-		src = (char**)malloc(sizeof(char*) * (size + 1));
-		src[size] = NULL;
+		error_not_a_dir(file);
+		return (0);
 	}
-	return (src);
+	return (1);
 }

@@ -1,40 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr_realloc.c                                :+:      :+:    :+:   */
+/*   error3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qtamaril <qtamaril@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/03 17:30:49 by qtamaril          #+#    #+#             */
-/*   Updated: 2020/10/10 11:34:33 by qtamaril         ###   ########.fr       */
+/*   Created: 2020/10/18 12:49:25 by qtamaril          #+#    #+#             */
+/*   Updated: 2020/10/18 12:51:11 by qtamaril         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	**ft_strstr_realloc(char **src, size_t size)
+void	error_exit_many_args(void)
 {
-	char	**temp;
-	size_t	i;
-
-	temp = src;
-	i = 0;
-	if (src)
-	{
-		size += ft_strstrlen(src);
-		src = (char**)malloc(sizeof(char*) * (size + 1));
-		while (i < size)
-		{
-			src[i] = temp[i];
-			i++;
-		}
-		src[i] = NULL;
-		free(temp);
-	}
-	else
-	{
-		src = (char**)malloc(sizeof(char*) * (size + 1));
-		src[size] = NULL;
-	}
-	return (src);
+	ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+	g_status = 1;
 }

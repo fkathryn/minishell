@@ -1,40 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr_realloc.c                                :+:      :+:    :+:   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qtamaril <qtamaril@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/03 17:30:49 by qtamaril          #+#    #+#             */
-/*   Updated: 2020/10/10 11:34:33 by qtamaril         ###   ########.fr       */
+/*   Created: 2020/10/03 16:04:26 by qtamaril          #+#    #+#             */
+/*   Updated: 2020/10/10 11:32:20 by qtamaril         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	**ft_strstr_realloc(char **src, size_t size)
+char	*ft_str_realloc(char *src, size_t size)
 {
-	char	**temp;
-	size_t	i;
+	char	*temp;
 
 	temp = src;
-	i = 0;
-	if (src)
+	if (src != NULL)
 	{
-		size += ft_strstrlen(src);
-		src = (char**)malloc(sizeof(char*) * (size + 1));
-		while (i < size)
-		{
-			src[i] = temp[i];
-			i++;
-		}
-		src[i] = NULL;
+		size += ft_strlen(src);
+		src = (char*)ft_calloc(1, size + 1);
+		ft_strcpy(src, temp);
 		free(temp);
 	}
 	else
-	{
-		src = (char**)malloc(sizeof(char*) * (size + 1));
-		src[size] = NULL;
-	}
+		src = (char*)ft_calloc(1, size + 1);
 	return (src);
 }

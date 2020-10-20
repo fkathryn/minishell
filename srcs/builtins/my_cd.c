@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fkathryn <fkathryn@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qtamaril <qtamaril@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/04 16:01:14 by qtamaril          #+#    #+#             */
-/*   Updated: 2020/10/06 12:40:10 by fkathryn         ###   ########.fr       */
+/*   Updated: 2020/10/17 17:27:03 by qtamaril         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,50 +15,81 @@
 char	*find_home(t_list *env)
 {
 	t_list	*tmp;
+	t_env	*content;
 
 	tmp = env;
 	while (tmp)
 	{
-		if (!ft_strcmp(((t_env*)tmp->content)->name, "HOME"))
-			return (((t_env*)tmp->content)->value);
+		content = (t_env*)tmp->content;
+		if (content && !ft_strcmp(content->name, "HOME"))
+			return (content->value);
 		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-void	cd_error(char **cmd)
+void	set_pwd(t_list **env)
 {
-	ft_putstr_fd(SHELL, STDERR_FILENO);
-	ft_putstr_fd("cd: ", STDERR_FILENO);
-	ft_putstr_fd(cmd[1], STDERR_FILENO);
-	ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	t_list	*tmp;
+	t_env	*content;
+	char	*path;
+	t_env	*elem;
+
+	tmp = *env;
+	path = getcwd(NULL, 0);
+	while (tmp)
+	{
+		content = (t_env*)tmp->content;
+		if (content && !ft_strcmp(content->name, "PWD"))
+		{
+			free(content->value);
+			content->value = path;
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	if (!(elem = malloc(sizeof(t_env))))
+		return ;
+	elem->name = ft_strdup("PWD");
+	elem->value = path;
+	ft_lstadd_back(env, ft_lstnew(elem));
+	env_sort(env);
 }
 
-int		my_cd(char **cmd, t_list *env)
+void	my_cd2(char **cmd, t_list **env)
+{
+	if (!ft_strcmp(cmd[1], "\0"))
+		;
+	else if (!check_dir(cmd[1]))
+		return ;
+	else if (chdir(cmd[1]) == 0)
+		set_pwd(env);
+	else
+		error_from_errno(cmd[1]);
+}
+
+int		my_cd(char **cmd, t_list **env)
 {
 	char	*home_value;
 
-	(void)env;
+	g_status = 0;
 	if (ft_strstrlen(cmd) == 1)
 	{
-		if (!(home_value = find_home(env)))
+		if (!(home_value = find_home(*env)))
+			return (error_home_not_set());
+		else if (!check_dir(home_value))
+			return (1);
+		else if (!ft_strcmp(home_value, "\0"))
 		{
-			ft_putstr_fd(SHELL, STDERR_FILENO);
-			ft_putstr_fd("cd: ", STDERR_FILENO);
-			ft_putstr_fd("HOME", STDERR_FILENO);
-			ft_putendl_fd(" not set", STDERR_FILENO);
+			set_pwd(env);
+			return (1);
 		}
-		if (chdir(home_value) == 0)
-			;
+		else if (chdir(home_value) == 0)
+			set_pwd(env);
 		else
-			cd_error(cmd);
+			error_from_errno(cmd[1]);
 	}
 	else
-	{
-		if (chdir(cmd[1]) == 0)
-			;
-		else
-			cd_error(cmd);
-	}
+		my_cd2(cmd, env);
 	return (1);
 }

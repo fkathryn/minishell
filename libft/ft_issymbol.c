@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_issymbol.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fkathryn <fkathryn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/05 10:30:08 by qtamaril          #+#    #+#             */
-/*   Updated: 2020/10/07 16:54:03 by fkathryn         ###   ########.fr       */
+/*   Created: 2020/10/09 10:06:18 by fkathryn          #+#    #+#             */
+/*   Updated: 2020/10/09 12:15:48 by fkathryn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-char	*ft_strjoin(char const *s1, char const *s2)
+int		ft_issymbol(int c)
 {
-	char		*strjoin;
-	size_t		i;
-	size_t		j;
-
-	i = 0;
-	j = 0;
-	if (!(strjoin = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char))))
-		return (NULL);
-	while (s1[j])
-		strjoin[i++] = s1[j++];
-	j = 0;
-	while (s2[j])
-		strjoin[i++] = s2[j++];
-	strjoin[i] = '\0';
-	return (strjoin);
+	if ((c >= 33 && c <= 35) || (c >= 35 && c <= 47)
+		|| (c >= 58 && c <= 61) || (c >= 63 && c <= 64)
+		|| (c >= 91 && c <= 94)
+		|| c == 96 || (c >= 123 && c <= 126))
+		return (1);
+	else
+		return (0);
 }

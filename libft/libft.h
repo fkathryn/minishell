@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fkathryn <fkathryn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/30 11:04:51 by student           #+#    #+#             */
-/*   Updated: 2020/10/04 16:48:38 by qtamaril         ###   ########.fr       */
+/*   Updated: 2020/10/17 16:09:00 by fkathryn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,19 @@ t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 void (*del)(void *));
 
 int				ft_strcmp(char *s1, char *s2);
-void			*ft_realloc(char *src, int size);
+char			*ft_str_realloc(char *src, size_t size);
 void			ft_free_strstr(char **splitted);
 size_t			ft_strstrlen(char **splitted);
 char			**ft_strstrdup(char **s);
 char			*ft_strcpy(char *dest, char *src);
 int				ft_str_is_num(char *str);
-char			**ft_strstr_realloc(char **src, int size);
+char			**ft_strstr_realloc(char **src, size_t size);
 void			ft_putstrstr_fd(char **splitted, int fd);
 void			ft_lst_remove_if(t_list **begin_list,
 					void *data_ref, int (*cmp)());
+char			*ft_strlowcase(char *str);
+int				ft_isspace(int c);
+int				ft_issymbol(int c);
+char			*ft_strjoin_gnl(char *s1, char *s2);
+
 #endif

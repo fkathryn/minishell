@@ -3,17 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fkathryn <fkathryn@student.42.fr>          +#+  +:+       +#+         #
+#    By: qtamaril <qtamaril@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/09/29 15:03:36 by qtamaril          #+#    #+#              #
-#    Updated: 2020/10/06 13:20:14 by fkathryn         ###   ########.fr        #
+#    Updated: 2020/10/18 12:51:37 by qtamaril         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 LIB_A =	libft/libft.a
-GNL_A = gnl/gnl.a
-INCLUDE = includes/minishell.h
+INCLUDE = includes/minishell.h libft/libft.h
 
 FLAGS_W = -Wall -Wextra -Werror -g
 FLAGS_LIB = -Iincludes
@@ -21,36 +20,44 @@ FLAGS_LIB = -Iincludes
 DIR_SRCS = srcs
 DIR_LIB = libft
 DIR_INC = includes
-DIR_GNL = gnl
 
 SRCS = srcs/builtins/builtins.c \
 		srcs/builtins/my_cd.c \
+		srcs/builtins/my_cd_utils.c \
 		srcs/builtins/my_echo.c \
 		srcs/builtins/my_env.c \
+		srcs/builtins/my_exit.c \
 		srcs/builtins/my_export.c \
 		srcs/builtins/my_pwd.c \
 		srcs/builtins/my_unset.c \
+		srcs/errors/error.c \
+		srcs/errors/error2.c \
+		srcs/errors/error3.c \
 		srcs/commands.c \
+		srcs/directions.c \
+		srcs/directions_utils.c \
 		srcs/env.c \
-		srcs/exit.c \
-		srcs/main_utils.c \
-		srcs/main.c
+		srcs/utils.c \
+		srcs/main.c \
+		srcs/lookup_env.c \
+		srcs/parse_line.c \
+		srcs/parse_arg.c \
+		srcs/check_path.c \
+		srcs/check_tokens.c \
+		srcs/signals.c
+
 OBJS = $(SRCS:%.c=%.o)
 
-.PHONY: all clean fclean re norme run
+.PHONY: all clean fclean re norme run libft_make
 
-all: $(NAME)
+all: libft_make $(NAME)
 
 $(NAME): $(INCLUDE) $(OBJS)
-	@make -C $(DIR_GNL)
-	@make -C $(DIR_LIB)
-	@make bonus -C $(DIR_LIB)
-	gcc $(FLAGS_W) $(LIB_A) $(GNL_A) $(OBJS) -o $(NAME)
+	@clang $(FLAGS_W) $(LIB_A) $(OBJS) -o $(NAME)
+	@echo minishell ready for work
 
 norme:
 	@make fclean
-	@echo
-	norminette ./$(DIR_GNL)/
 	@echo
 	norminette ./$(DIR_INC)
 	@echo
@@ -58,17 +65,20 @@ norme:
 	@echo
 	norminette ./$(DIR_SRCS)
 
-%.o: %.c
-	gcc -c $(FLAGS_LIB) $(FLAGS_W) -o $@ $<
+%.o: %.c $(INCLUDE)
+	@clang $(FLAGS_W) $(FLAGS_LIB) -c $< -o $@
+
+libft_make:
+	@make -C $(DIR_LIB) --silent
+	@echo libft builded
+
 
 clean:
 	rm -rf $(OBJS)
-	@make -C $(DIR_GNL) clean
 	@make -C $(DIR_LIB) clean
 
 fclean: clean
-	rm -f $(NAME)
-	rm -f $(GNL_A)
-	@make -C $(DIR_LIB) fclean
+	@rm -f $(NAME) --silent
+	@make -C $(DIR_LIB) fclean --silent
 
 re: fclean all
